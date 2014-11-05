@@ -21,9 +21,9 @@
 		// toggle all friends
 		$('#gt-friends-toggle').live('change', function(e) {
 			if ($(this).prop('checked') === true) {
-				$('#gt-invite-friends-friendspicker').find('input[name="user_guid[]"]').prop('checked', true);
+				$('#gt-invite-friends-friendspicker').find('input[name="friends[]"]').prop('checked', true);
 			} else {
-				$('#gt-invite-friends-friendspicker').find('input[name="user_guid[]"]').prop('checked', false);
+				$('#gt-invite-friends-friendspicker').find('input[name="friends[]"]').prop('checked', false);
 			}
 		});
 	};

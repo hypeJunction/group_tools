@@ -22,7 +22,7 @@ if (empty($friends)) {
 	<?php
 	echo elgg_view('input/friendspicker', array(
 		'entities' => $friends,
-		'name' => 'members',
+		'name' => 'friends',
 		'highlight' => 'all'
 	));
 	?>
