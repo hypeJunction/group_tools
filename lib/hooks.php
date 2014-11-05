@@ -104,11 +104,6 @@ function group_tools_route_groups_handler($hook, $type, $return_value, $params) 
 					
 				include(dirname(dirname(__FILE__)) . "/pages/mail.php");
 				break;
-			case "group_invite_autocomplete":
-				$result = false;
-				
-				include(dirname(dirname(__FILE__)) . "/procedures/group_invite_autocomplete.php");
-				break;
 			case "add":
 				if (group_tools_is_group_creation_limited()) {
 					admin_gatekeeper();

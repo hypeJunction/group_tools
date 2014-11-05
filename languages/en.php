@@ -202,18 +202,22 @@ To visit the group please click on the following link:
 	'group_tools:groups:invite:title' => "Invite users to this group",
 	'group_tools:groups:invite' => "Invite users",
 
-	'group_tools:group:invite:friends:select_all' => "Select all friends",
-	'group_tools:group:invite:friends:deselect_all' => "Deselect all friends",
+	'group_tools:group:invite:friends' => "Friends",
+	'group_tools:group:invite:friends:label' => "Friends to invite",
+	'group_tools:group:invite:friends:toggle' => 'Toggle all friends',
 
-	'group_tools:group:invite:users' => "Find user(s)",
+	'group_tools:group:invite:users' => "Find users",
+	'group_tools:group:invite:users:label' => "Users to invite",
 	'group_tools:group:invite:users:description' => "Enter a name or username of a site member and select him/her from the list",
 	'group_tools:group:invite:users:all' => "Invite all site members to this group",
 
-	'group_tools:group:invite:email' => "Using e-mail address",
-	'group_tools:group:invite:email:description' => "Enter a valid e-mail address and select it from the list",
+	'group_tools:group:invite:email' => "Using email address",
+	'group_tools:group:invite:email:label' => "Email addresses",
+	'group_tools:group:invite:email:description' => "Enter a list of emails, one per line",
 
 	'group_tools:group:invite:csv' => "Using CSV upload",
-	'group_tools:group:invite:csv:description' => "You can upload a CSV file with users to invite.<br />The format must be: displayname;e-mail address. There shouldn't be a header line.",
+	'group_tools:group:invite:csv:label' => "Upload a file",
+	'group_tools:group:invite:csv:description' => "You can upload a CSV file with users to invite. The format must be: displayname;e-mail address. There shouldn't be a header line.",
 
 	'group_tools:group:invite:text' => "Personal note (optional)",
 	'group_tools:group:invite:add:confirm' => "Are you sure you wish to add these users directly?",
@@ -456,6 +460,9 @@ To visit the group please click on the following link:
 	
 	// group member export
 	'group_tools:member_export:title_button' => "Export members",
+	
+	'group_tools:invite:action:invite' => 'Send out invitations',
+	'group_tools:invite:action:add' => 'Add users to group without an invitation',
 );
 
 add_translation("en", $english);
