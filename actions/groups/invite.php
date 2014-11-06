@@ -5,7 +5,7 @@ $loggedin_user = elgg_get_logged_in_user_entity();
 $group_guid = (int) get_input('group_guid');
 $group = get_entity($group_guid);
 
-if (!$group instanceof ElggGroup || !$group->canEdit()) {
+if (!$group instanceof ElggGroup) {
 	// no group or no editing permissions
 	register_error(elgg_echo('group_tools:action:error:edit'));
 	forward(REFERER);

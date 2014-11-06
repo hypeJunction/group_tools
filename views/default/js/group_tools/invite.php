@@ -26,6 +26,18 @@
 				$('#gt-invite-friends-friendspicker').find('input[name="friends[]"]').prop('checked', false);
 			}
 		});
+		
+		$('.elgg-menu-item-addtogroup a, .elgg-menu-item-killrequest a, .elgg-menu-item-killinvitation a, .elgg-menu-item-revoke-email-invitation a').live('click', function(e) {
+			e.preventDefault();
+			var $elem = $(this);
+			elgg.action($elem.attr('href'), {
+				success: function(response) {
+					if (response.status >= 0) {
+						$elem.closest('.elgg-item').remove();
+					}
+				}
+			});
+		});
 	};
 
 	elgg.register_hook_handler('init', 'system', elgg.group_tools.invite.init);
