@@ -1,7 +1,21 @@
 <?php
+
 /**
  * All event handlers for this plugin a in this file
  */
+
+/**
+ * Run upgrade scripts
+ */
+function group_tools_upgrade() {
+
+	if (elgg_is_admin_logged_in()) {
+		$ha = access_get_show_hidden_status();
+		access_show_hidden_entities(true);
+		require_once __DIR__ . '/upgrade.php';
+		access_show_hidden_entities($ha);
+	}
+}
 
 /**
  * When a user joins a group
@@ -14,9 +28,9 @@
  */
 function group_tools_join_group_event($event, $type, $params) {
 	global $NOTIFICATION_HANDLERS;
-	
+
 	static $auto_notification;
-	
+
 	// only load plugin setting once
 	if (!isset($auto_notification)) {
 		$auto_notification = array();
@@ -33,11 +47,11 @@ function group_tools_join_group_event($event, $type, $params) {
 			}
 		}
 	}
-	
+
 	if (!empty($params) && is_array($params)) {
 		$group = elgg_extract("group", $params);
 		$user = elgg_extract("user", $params);
-		
+
 		if (($user instanceof ElggUser) && ($group instanceof ElggGroup)) {
 			// check for the auto notification settings
 			if (!empty($NOTIFICATION_HANDLERS) && is_array($NOTIFICATION_HANDLERS)) {
@@ -47,26 +61,26 @@ function group_tools_join_group_event($event, $type, $params) {
 					}
 				}
 			}
-			
+
 			// cleanup invites
 			remove_entity_relationship($group->getGUID(), "invited", $user->getGUID());
-			
+
 			// and requests
 			remove_entity_relationship($user->getGUID(), "membership_request", $group->getGUID());
-			
+
 			// cleanup email invitations
 			$options = array(
 				"annotation_name" => "email_invitation",
 				"annotation_value" => group_tools_generate_email_invite_code($group->getGUID(), $user->email),
 				"limit" => false
 			);
-			
+
 			if (elgg_is_logged_in()) {
 				elgg_delete_annotations($options);
 			} elseif ($annotations = elgg_get_annotations($options)) {
 				group_tools_delete_annotations($annotations);
 			}
-			
+
 			// welcome message
 			$welcome_message = $group->getPrivateSetting("group_tools:welcome_message");
 			$check_message = trim(strip_tags($welcome_message));
@@ -75,7 +89,7 @@ function group_tools_join_group_event($event, $type, $params) {
 				$welcome_message = str_ireplace("[name]", $user->name, $welcome_message);
 				$welcome_message = str_ireplace("[group_name]", $group->name, $welcome_message);
 				$welcome_message = str_ireplace("[group_url]", $group->getURL(), $welcome_message);
-				
+
 				// notify the user
 				notify_user($user->getGUID(), $group->getGUID(), elgg_echo("group_tools:welcome_message:subject", array($group->name)), $welcome_message);
 			}
@@ -93,83 +107,82 @@ function group_tools_join_group_event($event, $type, $params) {
  * @return void
  */
 function group_tools_join_site_handler($event, $type, $relationship) {
-	
-	if (!empty($relationship) && ($relationship instanceof ElggRelationship)) {
-		$user_guid = $relationship->guid_one;
-		$site_guid = $relationship->guid_two;
-		
-		$user = get_user($user_guid);
-		if (!empty($user)) {
-			// ignore access
+
+	if (!$relationship instanceof ElggRelationship) {
+		return;
+	}
+
+	$user_guid = $relationship->guid_one;
+	$site_guid = $relationship->guid_two;
+
+	$user = get_entity($user_guid);
+	if (!$user) {
+		return;
+	}
+
+	$ia = elgg_set_ignore_access(true);
+
+	// add user as a member of groups flagged for auto join
+	$groups = new ElggBatch('elgg_get_entities_from_metadata', array(
+		'types' => 'group',
+		'metadata_name_value_pairs' => array(
+			'name' => 'group_tools_auto_join', 'value' => true,
+		),
+		'limit' => 0,
+	));
+	foreach ($groups as $group) {
+		$group->join($user);
+	}
+
+	// auto detect email invited groups
+	$groups = group_tools_get_invited_groups_by_email($user->email, $site_guid);
+	if (!empty($groups)) {
+		foreach ($groups as $group) {
+			// join the group
+			$group->join($user);
+		}
+	}
+
+	// check for manual email invited groups
+	$group_invitecode = get_input("group_invitecode");
+	if (!empty($group_invitecode)) {
+		$group = group_tools_check_group_email_invitation($group_invitecode);
+		if (!empty($group)) {
+			// join the group
+			$group->join($user);
+
+			// cleanup the invite code
+			$group_invitecode = sanitise_string($group_invitecode);
+
+			$options = array(
+				"guid" => $group->getGUID(),
+				"annotation_name" => "email_invitation",
+				"wheres" => array("(v.string = '" . $group_invitecode . "' OR v.string LIKE '" . $group_invitecode . "|%')"),
+				"annotation_owner_guid" => $group->getGUID(),
+				"limit" => 1
+			);
+
+			// ignore access in order to cleanup the invitation
 			$ia = elgg_set_ignore_access(true);
-			
-			// add user to the auto join groups
-			$auto_joins = elgg_get_plugin_setting("auto_join", "group_tools");
-			if (!empty($auto_joins)) {
-				$auto_joins = string_to_tag_array($auto_joins);
-				
-				foreach ($auto_joins as $group_guid) {
-					$group = get_entity($group_guid);
-					if (!empty($group) && ($group instanceof ElggGroup)) {
-						if ($group->site_guid == $site_guid) {
-							// join the group
-							$group->join($user);
-						}
-					}
-				}
-			}
-			
-			// auto detect email invited groups
-			$groups = group_tools_get_invited_groups_by_email($user->email, $site_guid);
-			if (!empty($groups)) {
-				foreach ($groups as $group) {
-					// join the group
-					$group->join($user);
-				}
-			}
-			
-			// check for manual email invited groups
-			$group_invitecode = get_input("group_invitecode");
-			if (!empty($group_invitecode)) {
-				$group = group_tools_check_group_email_invitation($group_invitecode);
-				if (!empty($group)) {
-					// join the group
-					$group->join($user);
-					
-					// cleanup the invite code
-					$group_invitecode = sanitise_string($group_invitecode);
-					
-					$options = array(
-						"guid" => $group->getGUID(),
-						"annotation_name" => "email_invitation",
-						"wheres" => array("(v.string = '" . $group_invitecode . "' OR v.string LIKE '" . $group_invitecode . "|%')"),
-						"annotation_owner_guid" => $group->getGUID(),
-						"limit" => 1
-					);
-					
-					// ignore access in order to cleanup the invitation
-					$ia = elgg_set_ignore_access(true);
-					
-					elgg_delete_annotations($options);
-					
-					// restore access
-					elgg_set_ignore_access($ia);
-				}
-			}
-			
-			// find domain based groups
-			$groups = group_tools_get_domain_based_groups($user, $site_guid);
-			if (!empty($groups)) {
-				foreach ($groups as $group) {
-					// join the group
-					$group->join($user);
-				}
-			}
-			
-			// restore access settings
+
+			elgg_delete_annotations($options);
+
+			// restore access
 			elgg_set_ignore_access($ia);
 		}
 	}
+
+	// find domain based groups
+	$groups = group_tools_get_domain_based_groups($user, $site_guid);
+	if (!empty($groups)) {
+		foreach ($groups as $group) {
+			// join the group
+			$group->join($user);
+		}
+	}
+
+	// restore access settings
+	elgg_set_ignore_access($ia);
 }
 
 /**
@@ -210,19 +223,19 @@ function group_tools_membership_request($event, $type, $relationship) {
 	if (!($relationship instanceof ElggRelationship)) {
 		return;
 	}
-	
+
 	$group = get_entity($relationship->guid_two);
 	$user = get_user($relationship->guid_one);
-	
+
 	if (!elgg_instanceof($group, 'group') || !elgg_instanceof($user, 'user')) {
 		return;
 	}
-	
+
 	// only send a message if group admins are allowed
 	if (elgg_get_plugin_setting("multiple_admin", "group_tools") != "yes") {
 		return;
 	}
-	
+
 	// Notify group admins
 	$options = array(
 		"relationship" => "group_admin",
@@ -232,7 +245,7 @@ function group_tools_membership_request($event, $type, $relationship) {
 		"limit" => false,
 		"wheres" => array("e.guid <> " . $group->owner_guid),
 	);
-	
+
 	$admins = elgg_get_entities_from_relationship($options);
 	if (!empty($admins)) {
 		$url = elgg_get_site_url() . "groups/requests/" . $group->getGUID();
@@ -240,7 +253,7 @@ function group_tools_membership_request($event, $type, $relationship) {
 			$user->name,
 			$group->name,
 		));
-		
+
 		foreach ($admins as $a) {
 			$body = elgg_echo("groups:request:body", array(
 				$a->name,
@@ -249,7 +262,7 @@ function group_tools_membership_request($event, $type, $relationship) {
 				$user->getURL(),
 				$url,
 			));
-			
+
 			notify_user($a->getGUID(), $user->getGUID(), $subject, $body);
 		}
 	}

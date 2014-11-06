@@ -644,25 +644,25 @@ function group_tools_get_suggested_groups($user = null, $limit = null) {
 		}
 
 		// get admin defined suggested groups
-		$group_guids = string_to_tag_array(elgg_get_plugin_setting("suggested_groups", "group_tools"));
-		if (!empty($group_guids) && ($limit > 0)) {
-			$group_options = array(
-				"guids" => $group_guids,
-				"type" => "group",
-				"wheres" => array($group_membership_where),
-				"limit" => $limit
-			);
+		$group_options = array(
+			"type" => "group",
+			'metadata_name_value_pairs' => array(
+				'name' => 'group_tools_suggested',
+				'value' => true,
+			),
+			"wheres" => array($group_membership_where),
+			"limit" => $limit
+		);
 
-			if (!empty($result)) {
-				$suggested_guids = array_keys($result);
-				$group_options["wheres"][] = "e.guid NOT IN (" . implode(",", $suggested_guids) . ")";
-			}
+		if (!empty($result)) {
+			$suggested_guids = array_keys($result);
+			$group_options["wheres"][] = "e.guid NOT IN (" . implode(",", $suggested_guids) . ")";
+		}
 
-			$groups = elgg_get_entities($group_options);
-			if (!empty($groups)) {
-				foreach ($groups as $group) {
-					$result[$group->getGUID()] = $group;
-				}
+		$groups = elgg_get_entities($group_options);
+		if (!empty($groups)) {
+			foreach ($groups as $group) {
+				$result[$group->getGUID()] = $group;
 			}
 		}
 	}
@@ -849,6 +849,46 @@ function group_tools_get_membership_information(ElggUser $user, ElggGroup $group
 	}
 
 	return $result;
+}
+
+/**
+ * Add all site members to a group
+ * @param ElggGroup $group Group to add all site members to
+ * @return integer Count of users added to group
+ */
+function group_tools_auto_join($group = null) {
+
+	$success = 0;
+	if (!elgg_instanceof($group, 'group')) {
+		return $success;
+	}
+
+	// get members of site that are not members of group
+	$dbprefix = elgg_get_config('dbprefix');
+	$options = array(
+		'type' => 'user',
+		'joins' => array(
+			"JOIN {$dbprefix}entity_relationships er1 ON e.guid = er1.guid_one",
+			"JOIN {$dbprefix}entity_relationships re2 ON e.guid = er2.guid_one",
+		),
+		'wheres' => array(
+			"er1.guid_two = $group->site_guid AND er1.relationship = 'member_of_site'",
+			"NOT EXISTS (SELECT * FROM {$dbprefix}entity_relationships er2
+				WHERE e.guid = er2.guid_one AND er2.guid_two = $group->guid AND er2.relationship = 'member')",
+		),
+		'limit' => 0,
+		'callback' => false,
+	);
+
+	$users = new ElggBatch('elgg_get_entities_from_relationship', $options);
+
+	foreach ($users as $user) {
+		if (join_group($group->guid, $user->guid)) {
+			$success++;
+		}
+	}
+
+	return $success;
 }
 
 /**

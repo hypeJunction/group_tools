@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Plugin settings for group tools
  */
@@ -40,14 +41,6 @@ $hidden_indicator_options = array(
 	"group_acl" => elgg_echo("group_tools:settings:show_hidden_group_indicator:group_acl"),
 	"logged_in" => elgg_echo("group_tools:settings:show_hidden_group_indicator:logged_in"),
 );
-	
-if ($auto_joins = $plugin->auto_join) {
-	$auto_joins = string_to_tag_array($auto_joins);
-}
-
-if ($suggested_groups = $plugin->suggested_groups) {
-	$suggested_groups = string_to_tag_array($suggested_groups);
-}
 
 // group management settings
 $title = elgg_echo("group_tools:settings:management:title");
@@ -131,9 +124,9 @@ $body .= "<ul class='mll'>";
 foreach ($listing_options as $tab => $tab_title) {
 	$tab_setting_name = "group_listing_" . $tab . "_available";
 	$checkbox_options = array(
-			"name" => "params[" . $tab_setting_name . "]",
-			"value" => 1
-			);
+		"name" => "params[" . $tab_setting_name . "]",
+		"value" => 1
+	);
 	$tab_value = $plugin->$tab_setting_name;
 	if ($tab_value !== "0") {
 		if ($tab == "ordered") {
@@ -230,16 +223,16 @@ if ($featured_groups = elgg_get_entities_from_metadata($options)) {
 		"href" => "#group-tools-special-states-featured",
 		"selected" => true
 	);
-	
+
 	$content .= "<div id='group-tools-special-states-featured'>";
 	$content .= elgg_view("output/longtext", array("value" => elgg_echo("group_tools:settings:special_states:featured:description")));
-	
+
 	$content .= "<table class='elgg-table mtm'>";
-	
+
 	$content .= "<tr>";
 	$content .= "<th colspan='2'>" . elgg_echo("groups:name") . "</th>";
 	$content .= "</tr>";
-	
+
 	foreach ($featured_groups as $group) {
 		$content .= "<tr>";
 		$content .= "<td>" . elgg_view("output/url", array("href" => $group->getURL(), "text" => $group->name)) . "</td>";
@@ -252,13 +245,13 @@ if ($featured_groups = elgg_get_entities_from_metadata($options)) {
 		$content .= "</td>";
 		$content .= "</tr>";
 	}
-	
+
 	$content .= "</table>";
 	$content .= "</div>";
 }
 
 // auto join
-if (!empty($auto_joins)) {
+if ($plugin->auto_join) {
 	$class = "";
 	$selected = true;
 	if (!empty($tabs)) {
@@ -270,45 +263,46 @@ if (!empty($auto_joins)) {
 		"href" => "#group-tools-special-states-auto-join",
 		"selected" => $selected
 	);
-	
+
 	$content .= "<div id='group-tools-special-states-auto-join' class='" . $class . "'>";
 	$content .= elgg_view("output/longtext", array("value" => elgg_echo("group_tools:settings:special_states:auto_join:description")));
-	
+
 	$content .= "<table class='elgg-table mtm'>";
-	
+
 	$content .= "<tr>";
 	$content .= "<th colspan='2'>" . elgg_echo("groups:name") . "</th>";
 	$content .= "</tr>";
-	
+
 	$options = array(
 		"type" => "group",
-		"limit" => false,
-		"guids" => $auto_joins
+		"limit" => 0,
+		'metadata_name_value_pairs' => array(
+			'name' => 'group_tools_auto_join',
+			'value' => true,
+		)
 	);
-	
-	$groups = elgg_get_entities($options);
-	
-	if (!empty($groups)) {
-		foreach ($groups as $group) {
-			$content .= "<tr>";
-			$content .= "<td>" . elgg_view("output/url", array("href" => $group->getURL(), "text" => $group->name)) . "</td>";
-			$content .= "<td style='width: 25px'>";
-			$content .= elgg_view("output/confirmlink", array(
-				"href" => "action/group_tools/toggle_special_state?group_guid=" . $group->getGUID() . "&state=auto_join",
-				"title" => elgg_echo("group_tools:remove"),
-				"text" => elgg_view_icon("delete"),
-			));
-			$content .= "</td>";
-			$content .= "</tr>";
-		}
+
+	$groups = new ElggBatch('elgg_get_entities_from_metadata', $options);
+
+	foreach ($groups as $group) {
+		$content .= "<tr>";
+		$content .= "<td>" . elgg_view("output/url", array("href" => $group->getURL(), "text" => $group->name)) . "</td>";
+		$content .= "<td style='width: 25px'>";
+		$content .= elgg_view("output/confirmlink", array(
+			"href" => "action/group_tools/toggle_special_state?group_guid=" . $group->getGUID() . "&state=auto_join",
+			"title" => elgg_echo("group_tools:remove"),
+			"text" => elgg_view_icon("delete"),
+		));
+		$content .= "</td>";
+		$content .= "</tr>";
 	}
-	
+
 	$content .= "</table>";
 	$content .= "</div>";
 }
 
 // suggested
-if (!empty($suggested_groups)) {
+if ($plugin->suggested_groups) {
 	$class = "";
 	$selected = true;
 	if (!empty($tabs)) {
@@ -320,40 +314,41 @@ if (!empty($suggested_groups)) {
 		"href" => "#group-tools-special-states-suggested",
 		"selected" => $selected
 	);
-	
+
 	$content .= "<div id='group-tools-special-states-suggested' class='" . $class . "'>";
 	$content .= elgg_view("output/longtext", array("value" => elgg_echo("group_tools:settings:special_states:suggested:description")));
-	
+
 	$content .= "<table class='elgg-table mtm'>";
-	
+
 	$content .= "<tr>";
 	$content .= "<th colspan='2'>" . elgg_echo("groups:name") . "</th>";
 	$content .= "</tr>";
-	
+
 	$options = array(
 		"type" => "group",
-		"limit" => false,
-		"guids" => $suggested_groups
+		"limit" => 0,
+		'metadata_name_value_pairs' => array(
+			'name' => 'group_tools_suggested',
+			'value' => true,
+		)
 	);
-	
-	$groups = elgg_get_entities($options);
-	
-	if (!empty($groups)) {
-		foreach ($groups as $group) {
-			
-			$content .= "<tr>";
-			$content .= "<td>" . elgg_view("output/url", array("href" => $group->getURL(), "text" => $group->name)) . "</td>";
-			$content .= "<td style='width: 25px'>";
-			$content .= elgg_view("output/confirmlink", array(
-				"href" => "action/group_tools/toggle_special_state?group_guid=" . $group->getGUID() . "&state=suggested",
-				"title" => elgg_echo("group_tools:remove"),
-				"text" => elgg_view_icon("delete"),
-			));
-			$content .= "</td>";
-			$content .= "</tr>";
-		}
+
+	$groups = new ElggBatch('elgg_get_entities_from_metadata', $options);
+
+	foreach ($groups as $group) {
+
+		$content .= "<tr>";
+		$content .= "<td>" . elgg_view("output/url", array("href" => $group->getURL(), "text" => $group->name)) . "</td>";
+		$content .= "<td style='width: 25px'>";
+		$content .= elgg_view("output/confirmlink", array(
+			"href" => "action/group_tools/toggle_special_state?group_guid=" . $group->getGUID() . "&state=suggested",
+			"title" => elgg_echo("group_tools:remove"),
+			"text" => elgg_view_icon("delete"),
+		));
+		$content .= "</td>";
+		$content .= "</tr>";
 	}
-	
+
 	$content .= "</table>";
 	$content .= "</div>";
 }
@@ -363,7 +358,7 @@ if (!empty($tabs)) {
 	if (count($tabs) > 1) {
 		$navigation = elgg_view("navigation/tabs", array("tabs" => $tabs, "id" => "group-tools-special-states-tabs"));
 	}
-	
+
 	echo elgg_view_module("inline", elgg_echo("group_tools:settings:special_states"), $navigation . $content);
 }
 
@@ -429,13 +424,13 @@ if (count($rows) > 1) {
 
 if (!empty($rows)) {
 	$content = "<table class='elgg-table'>";
-	
+
 	foreach ($rows as $row) {
 		$content .= "<tr><td>" . implode("</td><td>", $row) . "</td></tr>";
 	}
-	
+
 	$content .= "</table>";
-	
+
 	echo elgg_view_module("inline", elgg_echo("group_tools:settings:fix:title"), $content);
 }
 	

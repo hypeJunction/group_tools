@@ -69,14 +69,13 @@ function group_tools_init() {
 	
 	// group invitation
 	elgg_register_action("groups/invite", dirname(__FILE__) . "/actions/groups/invite.php");
-	
+
+	// ownership transfer
+	elgg_extend_view('groups/edit', 'group_tools/forms/admin_transfer', 400);
+
 	// manage auto join for groups
 	elgg_extend_view("groups/edit", "group_tools/forms/special_states", 350);
 	elgg_register_event_handler("create", "member_of_site", "group_tools_join_site_handler");
-	
-	// show group edit as tabbed
-	elgg_extend_view("groups/edit", "group_tools/group_edit_tabbed", 1);
-	elgg_extend_view("groups/edit", "group_tools/group_edit_tabbed_js", 999999999);
 	
 	// show group profile widgets - edit form
 	elgg_extend_view("groups/edit", "group_tools/forms/profile_widgets", 400);
@@ -108,10 +107,6 @@ function group_tools_init() {
 		elgg_register_widget_type("group_news", elgg_echo("widgets:group_news:title"), elgg_echo("widgets:group_news:description"), "profile,index,dashboard", true);
 		elgg_extend_view("css/elgg", "widgets/group_news/css");
 		elgg_extend_view("js/elgg", "widgets/group_news/js");
-	}
-	
-	if (elgg_is_admin_logged_in()) {
-		run_function_once("group_tools_version_1_3");
 	}
 	
 	// related groups
@@ -193,14 +188,7 @@ function group_tools_pagesetup() {
 		}
 		
 		if (!empty($user)) {
-			// check for admin transfer
-			$admin_transfer = elgg_get_plugin_setting("admin_transfer", "group_tools");
 			
-			if (($admin_transfer == "admin") && $user->isAdmin()) {
-				elgg_extend_view("groups/edit", "group_tools/forms/admin_transfer", 400);
-			} elseif (($admin_transfer == "owner") && (($page_owner->getOwnerGUID() == $user->getGUID()) || $user->isAdmin())) {
-				elgg_extend_view("groups/edit", "group_tools/forms/admin_transfer", 400);
-			}
 			
 			// check multiple admin
 			if (elgg_get_plugin_setting("multiple_admin", "group_tools") == "yes") {
@@ -270,36 +258,8 @@ function group_tools_pagesetup() {
 	
 }
 
-/**
- * Upgrade script to fix some problem
- *
- * @return void
- */
-function group_tools_version_1_3() {
-	$dbprefix = elgg_get_config("dbprefix");
-	
-	$query = "SELECT ac.id AS acl_id, ac.owner_guid AS group_guid, er.guid_one AS user_guid
-		FROM {$dbprefix}access_collections ac
-		JOIN {$dbprefix}entities e ON e.guid = ac.owner_guid
-		JOIN {$dbprefix}entity_relationships er ON ac.owner_guid = er.guid_two
-		WHERE e.type = 'group'
-		AND er.relationship = 'member'
-		AND er.guid_one NOT IN (
-			SELECT acm.user_guid
-			FROM {$dbprefix}access_collections ac2
-			JOIN {$dbprefix}access_collection_membership acm ON ac2.id = acm.access_collection_id
-			WHERE ac2.owner_guid = ac.owner_guid
-		)";
-	
-	$data = get_data($query);
-	if (!empty($data)) {
-		foreach ($data as $row) {
-			add_user_to_access_collection($row->user_guid, $row->acl_id);
-		}
-	}
-}
-
 // default elgg event handlers
 elgg_register_event_handler("init", "system", "group_tools_init");
 elgg_register_event_handler("ready", "system", "group_tools_ready");
+elgg_register_event_handler('upgrade', 'system', 'group_tools_upgrade');
 elgg_register_event_handler("pagesetup", "system", "group_tools_pagesetup", 550);

@@ -122,8 +122,9 @@ To visit the group please click on the following link:
 %s",
 
 	// group edit tabbed
-	'group_tools:group:edit:profile' => "Group profile / tools",
-	'group_tools:group:edit:other' => "Other options",
+	'group_tools:filter:edit:profile' => 'Profile & Settings',
+	'group_tools:filter:edit:other' => 'Admin Tools',
+	'group_tools:group:edit:profile' => 'Edit group profile and settings',
 
 	// admin transfer - form
 	'group_tools:admin_transfer:title' => "Transfer the ownership of this group",
@@ -136,10 +137,10 @@ To visit the group please click on the following link:
 	// special states form
 	'group_tools:special_states:title' => "Group special states",
 	'group_tools:special_states:description' => "A group can have several special states, here is an overview of the special states and their current value.",
-	'group_tools:special_states:featured' => "Is this group featured",
-	'group_tools:special_states:auto_join' => "Will users automaticly join this group",
-	'group_tools:special_states:auto_join:fix' => "To make all site members a member of this group, please %sclick here%s.",
-	'group_tools:special_states:suggested' => "Is this group suggested to (new) users",
+	'group_tools:special_states:featured' => "Featured group",
+	'group_tools:special_states:auto_join' => "Automatically add new users as members of this group",
+	'group_tools:special_states:auto_join:fix' => "Add all site members to this group",
+	'group_tools:special_states:suggested' => "Suggested group",
 	
 	// group admins
 	'group_tools:multiple_admin:group_admins' => "Group admins",
@@ -175,8 +176,9 @@ To visit the group please click on the following link:
 
 	// group notification
 	'group_tools:notifications:title' => "Group notifications",
-	'group_tools:notifications:description' => "This group has %s members, of those %s have enabled notifications on activity in this group. Below you can change this for all users of the group.",
+	'group_tools:notifications:description' => "%2\$s of %1\$s group members are recieving activity notifications from this group. You can update the notification settings for all members of this group. ",
 	'group_tools:notifications:disclaimer' => "With large groups this could take a while.",
+	'group_tools:notifications:methods' => "Methods to toggle",
 	'group_tools:notifications:enable' => "Enable notifications for everyone",
 	'group_tools:notifications:disable' => "Disable notifications for everyone",
 
@@ -306,7 +308,7 @@ To visit the group please click on the following link:
 	'group_tools:action:toggle_special_state:suggested' => "The new suggested settings were saved successfully",
 	
 	// group fix auto_join
-	'group_tools:action:fix_auto_join:success' => "Group membership fixed: %s new members, %s were already a member and %s failures",
+	'group_tools:action:fix_auto_join:success' => "Group membership fixed: %s new members were added",
 
 	// group cleanup
 	'group_tools:actions:cleanup:success' => "The cleanup settings were saved successfully",
@@ -463,6 +465,9 @@ To visit the group please click on the following link:
 	
 	'group_tools:invite:action:invite' => 'Send out invitations',
 	'group_tools:invite:action:add' => 'Add users to group without an invitation',
+	
+	'group_tools:forms:saving' => 'Saving...',
+	
 );
 
 add_translation("en", $english);

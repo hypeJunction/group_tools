@@ -74,6 +74,21 @@ function group_tools_route_groups_handler($hook, $type, $return_value, $params) 
 				}
 
 				break;
+				
+			case 'add' :
+				$result = false;
+				set_input('page', $page[0]);
+				set_input('container_guid', $page[1]);
+				include(dirname(dirname(__FILE__)) . "/pages/groups/edit.php");
+				break;
+			
+			case 'edit' :
+				$result = false;
+				set_input('page', $page[0]);
+				set_input('guid', $page[1]);
+				include(dirname(dirname(__FILE__)) . "/pages/groups/edit.php");
+				break;
+			
 			case "suggested":
 				$result = false;
 

@@ -1,10 +1,19 @@
 <?php
 
-elgg_load_js('group_tools.tools');
-
 $entity = elgg_extract('entity', $vars);
+$user = elgg_get_logged_in_user_entity();
 
-if (!elgg_instanceof($entity, 'group') || !$group->canEdit()) {
+if (!elgg_instanceof($entity, 'group') || !$entity->canEdit()) {
+	return true;
+}
+
+// check plugin settings
+$admin_transfer = elgg_get_plugin_setting('admin_transfer', 'group_tools');
+if ($admin_transfer == 'no') {
+	return true;
+} else if ($admin_transfer == 'admin' && !$user->isAdmin()) {
+	return true;
+} else if ($admin_transfer == 'owner' && $entity->owner_guid != $user->guid && !$user->isAdmin()) {
 	return true;
 }
 

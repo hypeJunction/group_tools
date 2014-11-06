@@ -67,3 +67,6 @@ if (false) {
 	.gt-form-field {
 		margin-bottom: 10px;
 	}
+	.gt-edit-group-layout .elgg-menu-filter {
+		margin: 0 0 15px;
+	}
