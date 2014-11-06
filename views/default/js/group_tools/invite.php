@@ -27,6 +27,15 @@
 			}
 		});
 		
+		// admin - invite all site members
+		$('#gt-invite-users-all').live('change', function(e) {
+			if ($(this).prop('checked') === true) {
+				$('#gt-invite-users-pick').addClass('hidden');
+			} else {
+				$('#gt-invite-users-pick').removeClass('hidden');
+			}
+		});
+		
 		$('.elgg-menu-item-addtogroup a, .elgg-menu-item-killrequest a, .elgg-menu-item-killinvitation a, .elgg-menu-item-revoke-email-invitation a').live('click', function(e) {
 			e.preventDefault();
 			var $elem = $(this);
