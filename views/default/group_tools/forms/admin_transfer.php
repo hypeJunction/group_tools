@@ -43,7 +43,7 @@ if (!empty($group) && ($group instanceof ElggGroup) && !empty($user)) {
 			$add_friends = false;
 			$add_members = false;
 			
-			$result = elgg_echo("group_tools:admin_transfer:transfer") . ": ";
+			$result = '<label>' . elgg_echo("group_tools:admin_transfer:transfer") . '</label>';
 			$result .= "<select name='owner_guid'>";
 			
 			if ($group->getOwnerGUID() != $user->getGUID()) {
@@ -83,8 +83,6 @@ if (!empty($group) && ($group instanceof ElggGroup) && !empty($user)) {
 			}
 			
 			$result .= "</select>";
-			$result .= "<br />";
-			$result .= "<br />";
 			
 			if ($add_myself || $add_friends || $add_members) {
 				

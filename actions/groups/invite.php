@@ -1,12 +1,17 @@
 <?php
 
 $loggedin_user = elgg_get_logged_in_user_entity();
+$is_admin = elgg_is_admin_logged_in();
 
 $group_guid = (int) get_input('group_guid');
 $group = get_entity($group_guid);
 
 if (!$group instanceof ElggGroup) {
-	// no group or no editing permissions
+	// not a valid group guid is passed
+	register_error(elgg_echo('group_tools:action:error:input'));
+	forward(REFERER);
+} else if (!$group->canEdit() || group_tools_allow_members_invite($group)) {
+	// user is not allowed to invite members to this group
 	register_error(elgg_echo('group_tools:action:error:edit'));
 	forward(REFERER);
 }
@@ -29,8 +34,8 @@ $emails = array();
 $ha = access_get_show_hidden_status();
 access_show_hidden_entities(true);
 
-// separate emails of registered and non-registered users
 if ($email_input) {
+	// separate emails of registered and non-registered users
 	$email_addresses = trim($email_input);
 	if (strlen($email_addresses) > 0) {
 		$email_addresses = preg_split('/\\s+/', $email_addresses, -1, PREG_SPLIT_NO_EMPTY);
@@ -48,9 +53,9 @@ if ($email_input) {
 	}
 }
 
-// process csv and separate emails of registered and non-registered users
 $csv = get_uploaded_file('csv');
 if (!empty($csv)) {
+	// process csv and separate emails of registered and non-registered users
 	$file_location = $_FILES['csv']['tmp_name'];
 
 	if ($fh = fopen($file_location, 'r')) {
@@ -77,80 +82,67 @@ if (!empty($csv)) {
 	}
 }
 
-$user_guids = array_merge($site_member_guids, $friend_guids, $email_guids);
-$user_guids = array_unique($user_guids);
+if ($is_admin && get_input('all_users') == 'yes') {
+	$site = elgg_get_site_entity();
+	$users = new ElggBatch('elgg_get_entities_from_relationship', array(
+		'types' => 'user',
+		'relationship' => 'member_of_site',
+		'relationship_guid' => $site->guid,
+		'inverse_relationship' => true,
+		'limit' => 0,
+	));
+} else {
+	$user_guids = array_merge($site_member_guids, $friend_guids, $email_guids);
+	$user_guids = array_unique(array_map('sanitize_int', $user_guids));
+	if (!count($user_guids)) {
+		$user_guids = array(ELGG_ENTITIES_NO_VALUE);
+	}
+
+	$users = new ElggBatch('elgg_get_entities', array(
+		'types' => 'user',
+		'guids' => $user_guids,
+		'limit' => 0,
+	));
+}
 
 $text = get_input('comment');
 $resend = (get_input('resend') == 'yes') ? true : false;
 
-$add_as_admin = false;
-
-$invite_action = get_input('invite_action', 'invite');
-if (elgg_is_admin_logged_in()) {
-	// add all users?
-	if (get_input('all_users') == 'yes') {
-		$site = elgg_get_site_entity();
-
-		$options = array(
-			'limit' => false,
-			'callback' => 'group_tools_guid_only_callback'
-		);
-
-		$user_guids = $site->getMembers($options);
-	}
-
-	// add users directly?
-	if ($invite_action == 'add') {
-		$add_as_admin = true;
-	}
-}
-
-if (empty($user_guids) && empty($emails)) {
-	// no emails or guids to process
-	register_error(elgg_echo('group_tools:action:error:input'));
-	forward(REFERER);
-}
+$invite_action = get_input('invite_action');
+$add_as_admin = ($is_admin && $invite_action == 'add');
 
 // counters
 $already_invited = $invited = $member = $join = 0;
 
 // invite existing users
-if (!empty($user_guids)) {
+foreach ($users as $user) {
 	if ($add_as_admin) {
 		// add users directly
-		foreach ($user_guids as $u_id) {
-			if ($user = get_user($u_id)) {
-				if (!$group->isMember($user)) {
-					if (group_tools_add_user($group, $user, $text)) {
-						$join++;
-					}
-				} else {
-					$member++;
-				}
+		if (!$group->isMember($user)) {
+			if (group_tools_add_user($group, $user, $text)) {
+				$join++;
 			}
+		} else {
+			$member++;
 		}
 	} else {
 		// invite users
-		foreach ($user_guids as $u_id) {
-			if ($user = get_user($u_id)) {
-				if (!$group->isMember($user)) {
-					if (!check_entity_relationship($group->guid, 'invited', $user->guid) || $resend) {
-						if (group_tools_invite_user($group, $user, $text, $resend)) {
-							$invited++;
-						}
-					} else {
-						// user was already invited
-						$already_invited++;
-					}
-				} else {
-					$member++;
+		if (!$group->isMember($user)) {
+			if (!check_entity_relationship($group->guid, 'invited', $user->guid) || $resend) {
+				if (group_tools_invite_user($group, $user, $text, $resend)) {
+					$invited++;
 				}
+			} else {
+				// user was already invited
+				$already_invited++;
 			}
+		} else {
+			$member++;
 		}
 	}
 }
 
-// Invite members by e-mail address
+// invite members by e-mail address
 if (!empty($emails)) {
 	foreach ($emails as $email) {
 		$invite_result = group_tools_invite_email($group, $email, $text, $resend);
