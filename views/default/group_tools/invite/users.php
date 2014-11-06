@@ -11,7 +11,7 @@ $group = elgg_extract('entity', $vars);
 	?>
 </div>
 <?php
-if (!elgg_is_admin_logged_in()) {
+if (elgg_is_admin_logged_in()) {
 	?>
 	<div>
 		<label>
