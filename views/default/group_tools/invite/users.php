@@ -3,7 +3,7 @@ $group = elgg_extract('entity', $vars);
 
 if (elgg_is_admin_logged_in()) {
 	?>
-	<div>
+	<div class="gt-form-field">
 		<label>
 			<?php
 			echo elgg_view('input/checkbox', array(
@@ -19,11 +19,11 @@ if (elgg_is_admin_logged_in()) {
 }
 ?>
 <div id="gt-invite-users-pick">
-	<p class="elgg-text-help">
-		<?php echo elgg_echo('group_tools:group:invite:users:description') ?>
-	</p>
-	<div>
+	<div class="gt-form-field">
 		<label><?php echo elgg_echo('group_tools:group:invite:users:label') ?></label>
+		<span class="elgg-text-help">
+			<?php echo elgg_echo('group_tools:group:invite:users:description') ?>
+		</span>
 		<?php
 		echo elgg_view('input/userpicker');
 		?>

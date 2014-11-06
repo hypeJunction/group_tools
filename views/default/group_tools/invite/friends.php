@@ -7,8 +7,7 @@ if (empty($friends)) {
 	return true;
 }
 ?>
-<div>
-	<label><?php echo elgg_echo('group_tools:group:invite:friends:label') ?></label>
+<div class="gt-form-field">
 	<label>
 		<?php
 		echo elgg_view('input/checkbox', array(
@@ -18,12 +17,15 @@ if (empty($friends)) {
 		?>
 	</label>
 </div>
-<div id="gt-invite-friends-friendspicker">
-	<?php
-	echo elgg_view('input/friendspicker', array(
-		'entities' => $friends,
-		'name' => 'friends',
-		'highlight' => 'all'
-	));
-	?>
+<div class="gt-form-field">
+	<label><?php echo elgg_echo('group_tools:group:invite:friends:label') ?></label>
+	<div id="gt-invite-friends-friendspicker">
+		<?php
+		echo elgg_view('input/friendspicker', array(
+			'entities' => $friends,
+			'name' => 'friends',
+			'highlight' => 'all'
+		));
+		?>
+	</div>
 </div>

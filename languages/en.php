@@ -204,7 +204,7 @@ To visit the group please click on the following link:
 
 	'group_tools:group:invite:friends' => "Friends",
 	'group_tools:group:invite:friends:label' => "Friends to invite",
-	'group_tools:group:invite:friends:toggle' => 'Toggle all friends',
+	'group_tools:group:invite:friends:toggle' => 'Invite all friends',
 
 	'group_tools:group:invite:users' => "Find users",
 	'group_tools:group:invite:users:label' => "Users to invite",

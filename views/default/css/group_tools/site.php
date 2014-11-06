@@ -63,3 +63,7 @@ if (false) {
 	#group-tools-related-groups-form input.elgg-input-autocomplete {
 		width: 80%;
 	}
+	
+	.gt-form-field {
+		margin-bottom: 10px;
+	}
