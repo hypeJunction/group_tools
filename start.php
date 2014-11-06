@@ -22,6 +22,7 @@ function group_tools_init() {
 	elgg_extend_view("js/elgg", "js/group_tools/site");
 	elgg_extend_view("js/admin", "js/group_tools/admin");
 	
+	elgg_register_js('group_tools.tools', elgg_get_simplecache_url('js', 'group_tools/tools'));
 	elgg_register_js('group_tools.invite', elgg_get_simplecache_url('js', 'group_tools/invite'));
 	
 	// extend groups page handler

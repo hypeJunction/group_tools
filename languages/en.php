@@ -127,10 +127,10 @@ To visit the group please click on the following link:
 
 	// admin transfer - form
 	'group_tools:admin_transfer:title' => "Transfer the ownership of this group",
+	'group_tools:admin_transfer:assume_ownership' => "Assume ownership of this group",
 	'group_tools:admin_transfer:transfer' => "Transfer group ownership to",
-	'group_tools:admin_transfer:myself' => "Myself",
+	'group_tools:admin_transfer:transfer:help' => "Enter a name or username of a friend or another member of this group",
 	'group_tools:admin_transfer:submit' => "Transfer",
-	'group_tools:admin_transfer:no_users' => "No members or friends to transfer ownership to.",
 	'group_tools:admin_transfer:confirm' => "Are you sure you wish to transfer ownership?",
 
 	// special states form
@@ -265,7 +265,7 @@ To visit the group please click on the following link:
 
 	// admin transfer - action
 	'group_tools:action:admin_transfer:error:access' => "You're not allowed to transfer ownership of this group",
-	'group_tools:action:admin_transfer:error:self' => "You can't transfer onwership to yourself, you're already the owner",
+	'group_tools:action:admin_transfer:error:already_owner' => "%s is already an owner of this group",
 	'group_tools:action:admin_transfer:error:save' => "An unknown error occured while saving the group, please try again",
 	'group_tools:action:admin_transfer:success' => "Group ownership was successfully transfered to %s",
 

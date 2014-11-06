@@ -24,6 +24,10 @@
 		<plugin>groups</plugin>
 		<priority>after</priority>
 	</requires>
+	<requires>
+		<type>plugin</type>
+		<name>elgg_tokeninput</name>
+	</requires>
 	
 	<suggests>
 		<type>plugin</type>
