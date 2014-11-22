@@ -19,7 +19,7 @@ $english = array(
 	'group_tools:join:already:tooltip' => "You were invited to this group so you can join right now.",
 
 	// menu
-	'group_tools:menu:mail' => "Mail Members",
+	'group_tools:menu:mail' => "Message Members",
 	'group_tools:menu:invitations' => "Manage invitations",
 
 	// plugin settings
@@ -190,12 +190,16 @@ To visit the group please click on the following link:
 	// group mail
 	'group_tools:mail:message:from' => "From group",
 
-	'group_tools:mail:title' => "Send a mail to the group members",
-	'group_tools:mail:form:recipients' => "Number of recipients",
+	'group_tools:mail:title' => "Send a message to group members",
+	'group_tools:mail:form:recipients' => "Number of recipients: ",
 	'group_tools:mail:form:members:selection' => "Select individual members",
-
+	'group_tools:mail:form:members:toggle' => 'Toggle all',
+	
 	'group_tools:mail:form:title' => "Subject",
-	'group_tools:mail:form:description' => "Body",
+	'group_tools:mail:form:description' => "Message",
+	'group_tools:mail:form:members' => 'Members to notify',
+	'group_tools:mail:form:method' => "Delivery method",
+	'group_tools:mail:form:method:help' => 'Uncheck all boxes to notify members using their preferred notification method',
 
 	'group_tools:mail:form:js:members' => "Please select at least one member to send the message to",
 	'group_tools:mail:form:js:description' => "Please enter a message",
@@ -279,7 +283,7 @@ To visit the group please click on the following link:
 	'group_tools:action:toggle_admin:success:add' => "The user was successfully added as a group admin",
 
 	// group mail - action
-	'group_tools:action:mail:success' => "Message succesfully send",
+	'group_tools:action:mail:success' => "Message succesfully send to %s of %s members",
 
 	// group - invite - action
 	'group_tools:action:invite:error:invite'=> "No users were invited (%s already invited, %s already a member)",

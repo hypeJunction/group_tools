@@ -24,6 +24,7 @@ function group_tools_init() {
 	
 	elgg_register_js('group_tools.tools', elgg_get_simplecache_url('js', 'group_tools/tools'));
 	elgg_register_js('group_tools.invite', elgg_get_simplecache_url('js', 'group_tools/invite'));
+	elgg_register_js('group_tools.mail', elgg_get_simplecache_url('js', 'group_tools/mail'));
 	
 	// extend groups page handler
 	elgg_register_plugin_hook_handler("route", "groups", "group_tools_route_groups_handler");
