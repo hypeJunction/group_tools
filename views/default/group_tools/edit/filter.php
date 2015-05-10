@@ -16,15 +16,6 @@ $tabs = array(
 	),
 );
 
-
-$tabs = array(
-	"profile" => array(
-		"text" => elgg_echo("group_tools:group:edit:profile"),
-		"href" => "#group-tools-group-edit-profile",
-		"priority" => 100,
-		"selected" => true
-	),
-);
 if (elgg_instanceof($entity, 'group')) {
 	$tabs['other'] = array(
 		'text' => elgg_echo('group_tools:filter:edit:other'),
