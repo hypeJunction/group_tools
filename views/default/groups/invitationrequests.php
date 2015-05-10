@@ -47,7 +47,7 @@ if ((!empty($invitations) && is_array($invitations)) || (!empty($email_invites) 
 	
 				$alt = $accept_button . $delete_button;
 	
-				echo "<li class='pvs'>";
+				echo "<li class='elgg-item'>";
 				echo elgg_view_image_block($icon, $body, array("image_alt" => $alt));
 				echo "</li>";
 			}
@@ -87,7 +87,7 @@ if ((!empty($invitations) && is_array($invitations)) || (!empty($email_invites) 
 		
 			$alt = $accept_button . $delete_button;
 		
-			echo "<li class='pvs'>";
+			echo "<li class='elgg-item'>";
 			echo elgg_view_image_block($icon, $body, array("image_alt" => $alt));
 			echo "</li>";
 		}

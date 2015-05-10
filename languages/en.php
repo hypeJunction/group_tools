@@ -20,7 +20,7 @@ $english = array(
 	'group_tools:join:already:tooltip' => "You were invited to this group so you can join right now.",
 
 	// menu
-	'group_tools:menu:mail' => "Mail Members",
+	'group_tools:menu:mail' => "Message Members",
 	'group_tools:menu:invitations' => "Manage invitations",
 	'admin:administer_utilities:group_bulk_delete' => "Group bulk delete",
 
@@ -152,10 +152,10 @@ To visit the group please click on the following link:
 	// special states form
 	'group_tools:special_states:title' => "Group special states",
 	'group_tools:special_states:description' => "A group can have several special states, here is an overview of the special states and their current value.",
-	'group_tools:special_states:featured' => "Is this group featured",
-	'group_tools:special_states:auto_join' => "Will users automaticly join this group",
-	'group_tools:special_states:auto_join:fix' => "To make all site members a member of this group, please %sclick here%s.",
-	'group_tools:special_states:suggested' => "Is this group suggested to (new) users",
+	'group_tools:special_states:featured' => "Featured group",
+	'group_tools:special_states:auto_join' => "Automatically add new users as members of this group",
+	'group_tools:special_states:auto_join:fix' => "Add all site members to this group",
+	'group_tools:special_states:suggested' => "Suggested group",
 	
 	// group admins
 	'group_tools:multiple_admin:group_admins' => "Group admins",
@@ -191,8 +191,9 @@ To visit the group please click on the following link:
 
 	// group notification
 	'group_tools:notifications:title' => "Group notifications",
-	'group_tools:notifications:description' => "This group has %s members, of those %s have enabled notifications on activity in this group. Below you can change this for all users of the group.",
+	'group_tools:notifications:description' => "%2\$s of %1\$s group members are recieving activity notifications from this group. You can update the notification settings for all members of this group. ",
 	'group_tools:notifications:disclaimer' => "With large groups this could take a while.",
+	'group_tools:notifications:methods' => "Methods to toggle",
 	'group_tools:notifications:enable' => "Enable notifications for everyone",
 	'group_tools:notifications:disable' => "Disable notifications for everyone",
 
@@ -204,12 +205,16 @@ To visit the group please click on the following link:
 	// group mail
 	'group_tools:mail:message:from' => "From group",
 
-	'group_tools:mail:title' => "Send a mail to the group members",
-	'group_tools:mail:form:recipients' => "Number of recipients",
+	'group_tools:mail:title' => "Send a message to group members",
+	'group_tools:mail:form:recipients' => "Number of recipients: ",
 	'group_tools:mail:form:members:selection' => "Select individual members",
-
+	'group_tools:mail:form:members:toggle' => 'Toggle all',
+	
 	'group_tools:mail:form:title' => "Subject",
-	'group_tools:mail:form:description' => "Body",
+	'group_tools:mail:form:description' => "Message",
+	'group_tools:mail:form:members' => 'Members to notify',
+	'group_tools:mail:form:method' => "Delivery method",
+	'group_tools:mail:form:method:help' => 'Uncheck all boxes to notify members using their preferred notification method',
 
 	'group_tools:mail:form:js:members' => "Please select at least one member to send the message to",
 	'group_tools:mail:form:js:description' => "Please enter a message",
@@ -218,18 +223,22 @@ To visit the group please click on the following link:
 	'group_tools:groups:invite:title' => "Invite users to this group",
 	'group_tools:groups:invite' => "Invite users",
 
-	'group_tools:group:invite:friends:select_all' => "Select all friends",
-	'group_tools:group:invite:friends:deselect_all' => "Deselect all friends",
+	'group_tools:group:invite:friends' => "Friends",
+	'group_tools:group:invite:friends:label' => "Friends to invite",
+	'group_tools:group:invite:friends:toggle' => 'Invite all friends',
 
-	'group_tools:group:invite:users' => "Find user(s)",
+	'group_tools:group:invite:users' => "Find users",
+	'group_tools:group:invite:users:label' => "Users to invite",
 	'group_tools:group:invite:users:description' => "Enter a name or username of a site member and select him/her from the list",
 	'group_tools:group:invite:users:all' => "Invite all site members to this group",
 
-	'group_tools:group:invite:email' => "Using e-mail address",
-	'group_tools:group:invite:email:description' => "Enter a valid e-mail address and select it from the list",
+	'group_tools:group:invite:email' => "Using email address",
+	'group_tools:group:invite:email:label' => "Email addresses",
+	'group_tools:group:invite:email:description' => "Enter a list of emails, one per line",
 
 	'group_tools:group:invite:csv' => "Using CSV upload",
-	'group_tools:group:invite:csv:description' => "You can upload a CSV file with users to invite.<br />The format must be: displayname;e-mail address. There shouldn't be a header line.",
+	'group_tools:group:invite:csv:label' => "Upload a file",
+	'group_tools:group:invite:csv:description' => "You can upload a CSV file with users to invite. The format must be: displayname;e-mail address. There shouldn't be a header line.",
 
 	'group_tools:group:invite:text' => "Personal note (optional)",
 	'group_tools:group:invite:add:confirm' => "Are you sure you wish to add these users directly?",
@@ -281,7 +290,7 @@ To visit the group please click on the following link:
 
 	// admin transfer - action
 	'group_tools:action:admin_transfer:error:access' => "You're not allowed to transfer ownership of this group",
-	'group_tools:action:admin_transfer:error:self' => "You can't transfer onwership to yourself, you're already the owner",
+	'group_tools:action:admin_transfer:error:already_owner' => "%s is already an owner of this group",
 	'group_tools:action:admin_transfer:error:save' => "An unknown error occured while saving the group, please try again",
 	'group_tools:action:admin_transfer:success' => "Group ownership was successfully transfered to %s",
 
@@ -293,7 +302,7 @@ To visit the group please click on the following link:
 	'group_tools:action:toggle_admin:success:add' => "The user was successfully added as a group admin",
 
 	// group mail - action
-	'group_tools:action:mail:success' => "Message succesfully send",
+	'group_tools:action:mail:success' => "Message succesfully send to %s of %s members",
 
 	// group - invite - action
 	'group_tools:action:invite:error:invite'=> "No users were invited (%s already invited, %s already a member)",
@@ -322,7 +331,7 @@ To visit the group please click on the following link:
 	'group_tools:action:toggle_special_state:suggested' => "The new suggested settings were saved successfully",
 	
 	// group fix auto_join
-	'group_tools:action:fix_auto_join:success' => "Group membership fixed: %s new members, %s were already a member and %s failures",
+	'group_tools:action:fix_auto_join:success' => "Group membership fixed: %s new members were added",
 
 	// group cleanup
 	'group_tools:actions:cleanup:success' => "The cleanup settings were saved successfully",
@@ -482,6 +491,11 @@ To visit the group please click on the following link:
 	// group bulk delete
 	'group_tools:action:bulk_delete:success' => "The selected groups were deleted",
 	'group_tools:action:bulk_delete:error' => "An error occured while deleting the groups, please try again",
+	'group_tools:invite:action:invite' => 'Send out invitations',
+	'group_tools:invite:action:add' => 'Add users to group without an invitation',
+	
+	'group_tools:forms:saving' => 'Saving...',
+	
 );
 
 add_translation("en", $english);

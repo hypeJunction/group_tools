@@ -29,7 +29,11 @@ function group_tools_init() {
 	elgg_extend_view("js/elgg", "js/group_tools/site");
 	elgg_extend_view("js/admin", "js/group_tools/admin");
 	
-	// extend page handlers
+	elgg_register_js('group_tools.tools', elgg_get_simplecache_url('js', 'group_tools/tools'));
+	elgg_register_js('group_tools.invite', elgg_get_simplecache_url('js', 'group_tools/invite'));
+	elgg_register_js('group_tools.mail', elgg_get_simplecache_url('js', 'group_tools/mail'));
+	
+	// extend groups page handler
 	elgg_register_plugin_hook_handler("route", "groups", "group_tools_route_groups_handler");
 	elgg_register_plugin_hook_handler("route", "livesearch", "group_tools_route_livesearch_handler");
 	
@@ -40,7 +44,7 @@ function group_tools_init() {
 	elgg_register_plugin_hook_handler("register", "menu:title", "group_tools_menu_title_handler");
 	elgg_register_plugin_hook_handler("register", "menu:user_hover", "group_tools_menu_user_hover_handler");
 	elgg_register_plugin_hook_handler("register", "menu:entity", "group_tools_menu_entity_handler");
-	elgg_register_plugin_hook_handler("register", "menu:filter", "group_tools_menu_filter_handler");
+	elgg_register_plugin_hook_handler("register", "menu:group_tools_requests", "group_tools_requests_menu_setup");
 	
 	if (group_tools_multiple_admin_enabled()) {
 		// add group tool option
@@ -77,14 +81,13 @@ function group_tools_init() {
 	
 	// group invitation
 	elgg_register_action("groups/invite", dirname(__FILE__) . "/actions/groups/invite.php");
-	
+
+	// ownership transfer
+	elgg_extend_view('groups/edit', 'group_tools/forms/admin_transfer', 400);
+
 	// manage auto join for groups
 	elgg_extend_view("groups/edit", "group_tools/forms/special_states", 350);
 	elgg_register_event_handler("create", "member_of_site", "group_tools_join_site_handler");
-	
-	// show group edit as tabbed
-	elgg_extend_view("groups/edit", "group_tools/group_edit_tabbed", 1);
-	elgg_extend_view("groups/edit", "group_tools/group_edit_tabbed_js", 999999999);
 	
 	// show group profile widgets - edit form
 	elgg_extend_view("groups/edit", "group_tools/forms/profile_widgets", 400);
@@ -112,6 +115,7 @@ function group_tools_init() {
 	if (elgg_is_active_plugin("blog")) {
 		elgg_register_widget_type("group_news", elgg_echo("widgets:group_news:title"), elgg_echo("widgets:group_news:description"), array("profile", "index", "dashboard"), true);
 		elgg_extend_view("css/elgg", "widgets/group_news/css");
+		elgg_extend_view("js/elgg", "widgets/group_news/js");
 	}
 	
 	// related groups
