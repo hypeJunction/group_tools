@@ -66,7 +66,7 @@ if ($toggle == 'enable') {
 }
 
 if (elgg_is_xhr()) {
-	global $NOTIFICATION_HANDLERS;
+	$NOTIFICATION_HANDLERS = _elgg_services()->notifications->getMethods();
 
 	$relationships = array();
 	foreach ($NOTIFICATION_HANDLERS as $method => $dummy) {

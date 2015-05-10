@@ -14,4 +14,4 @@ $form_vars = array(
 
 $form = elgg_view_form('groups/edit', $form_vars, groups_prepare_form_vars($entity));
 
-echo elgg_view_module('info', elgg_echo('group_tools:group:edit:profile'), $form);
+echo $form;

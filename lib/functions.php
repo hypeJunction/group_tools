@@ -999,7 +999,7 @@ function group_tools_auto_join($group = null) {
 		'type' => 'user',
 		'joins' => array(
 			"JOIN {$dbprefix}entity_relationships er1 ON e.guid = er1.guid_one",
-			"JOIN {$dbprefix}entity_relationships re2 ON e.guid = er2.guid_one",
+			"JOIN {$dbprefix}entity_relationships er2 ON e.guid = er2.guid_one",
 		),
 		'wheres' => array(
 			"er1.guid_two = $group->site_guid AND er1.relationship = 'member_of_site'",
@@ -1051,6 +1051,9 @@ function group_tools_admin_transfer_user_search($term, $options = array()) {
 		(er1.guid_two = $group_guid AND er1.relationship = 'member')";
 
 	return elgg_get_entities($options);
+}
+
+/**
  * Check the plugin setting to allow multiple group admins
  *
  * @return bool

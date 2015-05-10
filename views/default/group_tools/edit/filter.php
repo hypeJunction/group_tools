@@ -10,10 +10,21 @@ $tabs = array(
 			'filter' => 'profile',
 		)),
 		'priority' => 100,
-		'selected' => ($filter_context == 'profile')
+		'data' => array(
+			'selected' => ($filter_context == 'profile')
+		)
 	),
 );
 
+
+$tabs = array(
+	"profile" => array(
+		"text" => elgg_echo("group_tools:group:edit:profile"),
+		"href" => "#group-tools-group-edit-profile",
+		"priority" => 100,
+		"selected" => true
+	),
+);
 if (elgg_instanceof($entity, 'group')) {
 	$tabs['other'] = array(
 		'text' => elgg_echo('group_tools:filter:edit:other'),
@@ -21,7 +32,9 @@ if (elgg_instanceof($entity, 'group')) {
 			'filter' => 'other',
 		)),
 		'priority' => 200,
-		'selected' => ($filter_context == 'other')
+		'data' => array(
+			'selected' => ($filter_context == 'other')
+		)
 	);
 }
 

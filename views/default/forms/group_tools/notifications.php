@@ -2,7 +2,7 @@
 
 $group = elgg_extract('entity', $vars);
 
-global $NOTIFICATION_HANDLERS;
+$NOTIFICATION_HANDLERS = _elgg_services()->notifications->getMethods();
 
 $relationships = array();
 foreach ($NOTIFICATION_HANDLERS as $method => $dummy) {

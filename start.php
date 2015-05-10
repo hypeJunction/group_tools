@@ -45,6 +45,7 @@ function group_tools_init() {
 	elgg_register_plugin_hook_handler("register", "menu:user_hover", "group_tools_menu_user_hover_handler");
 	elgg_register_plugin_hook_handler("register", "menu:entity", "group_tools_menu_entity_handler");
 	elgg_register_plugin_hook_handler("register", "menu:group_tools_requests", "group_tools_requests_menu_setup");
+	elgg_register_plugin_hook_handler("register", "menu:filter", "group_tools_menu_filter_handler");
 	
 	if (group_tools_multiple_admin_enabled()) {
 		// add group tool option
@@ -81,9 +82,6 @@ function group_tools_init() {
 	
 	// group invitation
 	elgg_register_action("groups/invite", dirname(__FILE__) . "/actions/groups/invite.php");
-
-	// ownership transfer
-	elgg_extend_view('groups/edit', 'group_tools/forms/admin_transfer', 400);
 
 	// manage auto join for groups
 	elgg_extend_view("groups/edit", "group_tools/forms/special_states", 350);

@@ -1045,3 +1045,78 @@ function groups_tools_group_icon_url_handler($hook, $type, $return_value, $param
 	);
 	return elgg_http_add_url_query_elements("mod/group_tools/pages/groups/thumbnail.php", $params);
 }
+
+/**
+ * Setup membership requests and invitation menus
+ *
+ * @param string $hook
+ * @param string $type
+ * @param array  $return
+ * @param array  $params
+ * @return array
+ */
+function group_tools_requests_menu_setup($hook, $type, $return, $params) {
+	$group = elgg_extract('group', $params);
+	$user = elgg_extract('user', $params);
+	$annotation = elgg_extract('annotation', $params);
+
+	if (!elgg_instanceof($group, 'group') || !$group->canEdit()) {
+		return $return;
+	}
+	if (elgg_instanceof($user, 'user')) {
+		if (check_entity_relationship($user->guid, 'membership_request', $group->guid)) {
+			$return[] = ElggMenuItem::factory(array(
+						'name' => 'addtogroup',
+						'href' => elgg_http_add_url_query_elements('action/groups/addtogroup', array(
+							'user_guid' => $user->guid,
+							'group_guid' => $group->guid,
+						)),
+						'text' => elgg_echo('accept'),
+						'class' => 'elgg-button elgg-button-action',
+						'is_action' => true,
+						'is_trusted' => true,
+						'priority' => 100,
+			));
+			$return[] = ElggMenuItem::factory(array(
+						'name' => 'killrequest',
+						'href' => elgg_http_add_url_query_elements('action/groups/killrequest', array(
+							'user_guid' => $user->guid,
+							'group_guid' => $group->guid,
+						)),
+						'text' => elgg_echo('delete'),
+						'rel' => elgg_echo('groups:joinrequest:remove:check'),
+						'class' => 'elgg-button elgg-button-delete elgg-requires-confirmation',
+						'is_action' => true,
+						'priority' => 200,
+			));
+		}
+		if (check_entity_relationship($group->guid, 'invited', $user->guid)) {
+			$return[] = ElggMenuItem::factory(array(
+						'name' => 'killinvitation',
+						'href' => elgg_http_add_url_query_elements('action/groups/killinvitation', array(
+							'user_guid' => $user->guid,
+							'group_guid' => $group->guid,
+						)),
+						'text' => elgg_echo('group_tools:revoke'),
+						'rel' => elgg_echo('group_tools:groups:membershipreq:invitations:revoke:confirm'),
+						'class' => 'elgg-button elgg-button-delete elgg-requires-confirmation',
+						'priority' => 300,
+			));
+		}
+	}
+	if ($annotation instanceof ElggAnnotation) {
+		$return[] = ElggMenuItem::factory(array(
+						'name' => 'revoke_email_invitation',
+						'href' => elgg_http_add_url_query_elements('action/group_tools/revoke_email_invitation', array(
+							'annotation_id' => $annotation->id,
+							'group_guid' => $group->guid,
+						)),
+						'text' => elgg_echo('group_tools:revoke'),
+						'rel' => elgg_echo('group_tools:groups:membershipreq:invitations:revoke:confirm'),
+						'class' => 'elgg-button elgg-button-delete elgg-requires-confirmation',
+						'priority' => 300,
+			));
+	}
+
+	return $return;
+}

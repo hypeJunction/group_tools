@@ -138,16 +138,19 @@ You can also go to All site groups -> Group invitations and enter the following 
 To visit the group please click on the following link:
 %s",
 
-	// group edit tabbed
-	'group_tools:group:edit:profile' => "Profile",
-	'group_tools:group:edit:access' => "Access",
-	'group_tools:group:edit:tools' => "Tools",
-	'group_tools:group:edit:other' => "Other options",
+		// group edit tabbed
+	'group_tools:filter:edit:profile' => 'Profile & Settings',
+	'group_tools:filter:edit:other' => 'Admin Tools',
+	'group_tools:group:edit:profile' => 'Edit group profile and settings',
 
 	// admin transfer - form
-	'group_tools:admin_transfer:current' => "Keep current owner: %s",
-	'group_tools:admin_transfer:myself' => "Myself",
+	'group_tools:admin_transfer:title' => "Transfer the ownership of this group",
+	'group_tools:admin_transfer:assume_ownership' => "Assume ownership of this group",
+	'group_tools:admin_transfer:transfer' => "Transfer group ownership to",
+	'group_tools:admin_transfer:transfer:help' => "Enter a name or username of a friend or another member of this group",
 	'group_tools:admin_transfer:submit' => "Transfer",
+	'group_tools:admin_transfer:confirm' => "Are you sure you wish to transfer ownership?",
+
 	
 	// special states form
 	'group_tools:special_states:title' => "Group special states",

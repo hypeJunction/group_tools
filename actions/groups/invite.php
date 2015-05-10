@@ -10,7 +10,7 @@ if (!$group instanceof ElggGroup) {
 	// not a valid group guid is passed
 	register_error(elgg_echo('group_tools:action:error:input'));
 	forward(REFERER);
-} else if (!$group->canEdit() || !group_tools_allow_members_invite($group)) {
+} else if (!$group->canEdit() && !group_tools_allow_members_invite($group)) {
 	// user is not allowed to invite members to this group
 	register_error(elgg_echo('group_tools:action:error:edit'));
 	forward(REFERER);
@@ -53,8 +53,7 @@ if ($email_input) {
 	}
 }
 
-$csv = get_uploaded_file('csv');
-if (!empty($csv)) {
+if (!empty($_FILES['csv']['name']) && $_FILES['csv']['error'] == UPLOAD_ERR_OK) {
 	// process csv and separate emails of registered and non-registered users
 	$file_location = $_FILES['csv']['tmp_name'];
 
